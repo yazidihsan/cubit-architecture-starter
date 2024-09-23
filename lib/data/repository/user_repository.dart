@@ -6,11 +6,11 @@ class UserRepository {
 
   UserRepository(this.userDataProvider);
 
-  Future<UserModel> createUser(UserModel user) async {
+  Future<List<UserModel>> createUser(UserModel user) async {
     try {
       final rawData = await userDataProvider.createUser(user.toJson());
 
-      return UserModel.fromJson(rawData);
+      return rawData.map((json) => UserModel.fromJson(json)).toList();
     } catch (e) {
       return throw Exception(e);
     }

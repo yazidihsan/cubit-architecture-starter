@@ -8,7 +8,7 @@ class UserDataProvider {
 
   UserDataProvider(this.client);
 
-  Future<Map<String, dynamic>> createUser(Map<String, dynamic> postData) async {
+  Future<List<dynamic>> createUser(Map<String, dynamic> postData) async {
     try {
       final response = await client.post(
           Uri.parse('${ValueManager.baseUrl}users'),
@@ -19,7 +19,7 @@ class UserDataProvider {
       log(response.body.toString());
 
       if (response.statusCode == 201) {
-        return jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonDecode(response.body) as List<dynamic>;
       } else {
         throw Exception('Failed to create data');
       }

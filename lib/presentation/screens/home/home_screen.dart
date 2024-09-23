@@ -40,6 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int userId = 0;
 
+  int item = 0;
+
   String? message;
 
   late String name;
@@ -60,6 +62,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant HomeScreen oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    deleteItem(item);
+  }
+
+  void deleteItem(int id) {
+    context.read<UserCubit>().deleteUser(id);
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
 
@@ -73,133 +86,137 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _addForm() {
     return SingleChildScrollView(
       child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 45),
-          child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  24.0.spaceY,
-                  const Text(
-                    "CRUD",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  48.0.spaceY,
-                  CustomTextField(
-                      keyboardType: TextInputType.text,
-                      controller: nameController,
-                      title: "Username"),
-                  16.0.spaceY,
-                  CustomTextField(
-                      keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
-                      title: "Email Address"),
-                  16.0.spaceY,
-                  CustomTextField(
-                      keyboardType: TextInputType.number,
-                      controller: phoneController,
-                      title: "Phone Number"),
-                  38.0.spaceY,
-                  BlocBuilder<UserCubit, UserState>(
-                    builder: (context, state) {
-                      if (state is UserLoading) {
-                        return const Center(child: CustomLoadingButton());
-                      }
-                      if (state is UserFailed) {
-                        final message = state.message;
-                        if (message.isNotEmpty) {
-                          ValueManager.customToast(message);
-                        }
-                      }
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 45),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              24.0.spaceY,
+              const Text(
+                "CRUD",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              48.0.spaceY,
+              CustomTextField(
+                  keyboardType: TextInputType.text,
+                  controller: nameController,
+                  title: "Username"),
+              16.0.spaceY,
+              CustomTextField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: emailController,
+                  title: "Email Address"),
+              16.0.spaceY,
+              CustomTextField(
+                  keyboardType: TextInputType.number,
+                  controller: phoneController,
+                  title: "Phone Number"),
+              38.0.spaceY,
+              BlocBuilder<UserCubit, UserState>(
+                builder: (context, state) {
+                  if (state is UserLoading) {
+                    return const Center(child: CustomLoadingButton());
+                  }
+                  if (state is UserFailed) {
+                    final message = state.message;
+                    if (message.isNotEmpty) {
+                      ValueManager.customToast(message);
+                    }
+                  }
 
-                      return CustomButton(
-                          onPressed: () {
-                            if ((_formKey.currentState ?? FormState())
-                                .validate()) {
-                              _userCubit.startCreateUser(UserModel(
-                                  name: nameController.text,
-                                  email: emailController.text,
-                                  phone: phoneController.text));
-                              Navigator.pop(context);
-                              setState(() {
-                                RefreshData(
-                                    onPressed: () async =>
-                                        context.read<UserCubit>().getAllUser());
-                              });
-                            }
-                          },
-                          title: "Create");
-                    },
-                  ),
-                ],
-              ))),
+                  return CustomButton(
+                      onPressed: () {
+                        if ((_formKey.currentState ?? FormState()).validate()) {
+                          _userCubit.startCreateUser(UserModel(
+                              name: nameController.text,
+                              email: emailController.text,
+                              phone: phoneController.text));
+                          Navigator.pop(context);
+                          setState(() {
+                            RefreshData(
+                                onPressed: () async =>
+                                    context.read<UserCubit>().getAllUser());
+                          });
+                        }
+                      },
+                      title: "Create");
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
   Widget _updateForm(int userIdx) {
     return SingleChildScrollView(
       child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 45),
-          child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  24.0.spaceY,
-                  const Text(
-                    "CRUD",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  48.0.spaceY,
-                  CustomTextField(
-                      keyboardType: TextInputType.text,
-                      controller: nameController,
-                      title: "Username"),
-                  16.0.spaceY,
-                  CustomTextField(
-                      keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
-                      title: "Email Address"),
-                  16.0.spaceY,
-                  CustomTextField(
-                      keyboardType: TextInputType.number,
-                      controller: phoneController,
-                      title: "Phone Number"),
-                  38.0.spaceY,
-                  BlocBuilder<UserCubit, UserState>(
-                    builder: (context, state) {
-                      if (state is UserLoading) {
-                        return const Center(child: CustomLoadingButton());
-                      }
-                      if (state is UserFailed) {
-                        final message = state.message;
-                        if (message.isNotEmpty) {
-                          ValueManager.customToast(message);
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 45),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              24.0.spaceY,
+              const Text(
+                "CRUD",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              48.0.spaceY,
+              CustomTextField(
+                  keyboardType: TextInputType.text,
+                  controller: nameController,
+                  title: "Username"),
+              16.0.spaceY,
+              CustomTextField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: emailController,
+                  title: "Email Address"),
+              16.0.spaceY,
+              CustomTextField(
+                  keyboardType: TextInputType.number,
+                  controller: phoneController,
+                  title: "Phone Number"),
+              38.0.spaceY,
+              BlocBuilder<UserCubit, UserState>(
+                builder: (context, state) {
+                  if (state is UserLoading) {
+                    return const Center(child: CustomLoadingButton());
+                  }
+                  if (state is UserFailed) {
+                    final message = state.message;
+                    if (message.isNotEmpty) {
+                      ValueManager.customToast(message);
+                    }
+                  }
+
+                  return CustomButton(
+                      onPressed: () {
+                        if ((_formKey.currentState ?? FormState()).validate()) {
+                          _userCubit.updateUser(
+                            userIdx,
+                            UserModel(
+                                name: nameController.text,
+                                email: emailController.text,
+                                phone: phoneController.text),
+                          );
+
+                          RefreshData(
+                            onPressed: () async =>
+                                context.read<UserCubit>().getAllUser(),
+                          );
+                          Navigator.pop(context);
                         }
-                      }
-
-                      return CustomButton(
-                          onPressed: () {
-                            if ((_formKey.currentState ?? FormState())
-                                .validate()) {
-                              _userCubit.updateUser(
-                                  userIdx,
-                                  UserModel(
-                                      name: nameController.text,
-                                      email: emailController.text,
-                                      phone: phoneController.text));
-
-                              RefreshData(
-                                  onPressed: () async =>
-                                      context.read<UserCubit>().getAllUser());
-                              Navigator.pop(context);
-                            }
-                          },
-                          title: "Update");
-                    },
-                  ),
-                ],
-              ))),
+                      },
+                      title: "Update");
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -232,76 +249,83 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => _userCubit,
-        child: Scaffold(
-            appBar: AppBar(
-              title: const Text('ToDo List'),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    Navigator.push(
+      create: (context) => _userCubit,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('ToDo List'),
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddUserScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        body: BlocBuilder<UserCubit, UserState>(
+          builder: (context, state) {
+            if (state is UserLoading) {
+              return const Center(child: CustomLoadingButton());
+            } else if (state is UserSuccess) {
+              final data = state.users;
+
+              return ListView.builder(
+                key: ValueKey(userId),
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  final user = data[index];
+                  item = user.id!;
+                  userId = user.id!;
+                  name = user.name;
+                  email = user.email;
+                  phone = user.phone;
+
+                  return ListTile(
+                    title: Text(name),
+                    subtitle: Text('$email - $phone'),
+                    trailing: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          deleteItem(userId);
+                          // context.read<UserCubit>().deleteUser(user.id!);
+                          context.read<UserCubit>().getAllUser();
+                        }),
+                    onTap: () {
+                      // Example of marking a todo as completed
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const AddUserScreen()));
-                  },
-                ),
-              ],
-            ),
-            body: BlocBuilder<UserCubit, UserState>(
-              builder: (context, state) {
-                if (state is UserLoading) {
-                  return const Center(child: CustomLoadingButton());
-                } else if (state is UserSuccess) {
-                  final data = state.users;
-
-                  return ListView.builder(
-                    key: ValueKey(userId),
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final user = data[index];
-                      userId = user.id!;
-                      name = user.name;
-                      email = user.email;
-                      phone = user.phone;
-
-                      return ListTile(
-                        title: Text(name),
-                        subtitle: Text('$email - $phone'),
-                        trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              context.read<UserCubit>().deleteUser(user.id!);
-
-                              _userCubit.getAllUser();
-                            }),
-                        onTap: () {
-                          // Example of marking a todo as completed
-
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditUserScreen(
-                                        userId: user.id!,
-                                        name: name,
-                                        email: email,
-                                        phone: phone,
-                                      )));
-
-                          // setState(() {
-                          //   isAdd = false;
-                          // });
-
-                          // _showBottomSheet(context);
-                        },
+                          builder: (context) => EditUserScreen(
+                            userId: user.id!,
+                            name: user.name,
+                            email: user.email,
+                            phone: user.phone,
+                          ),
+                        ),
                       );
+
+                      // setState(() {
+                      //   isAdd = false;
+                      // });
+
+                      // _showBottomSheet(context);
                     },
                   );
-                } else if (state is UserFailed) {
-                  return Center(child: Text(state.message));
-                }
-                return Container();
-              },
-            )));
+                },
+              );
+            } else if (state is UserFailed) {
+              return Center(child: Text(state.message));
+            }
+            return Container();
+          },
+        ),
+      ),
+    );
   }
 }

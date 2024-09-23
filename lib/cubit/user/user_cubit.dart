@@ -15,7 +15,7 @@ class UserCubit extends Cubit<UserState> {
       emit(UserLoading());
       final result = await userRepository.createUser(user);
 
-      emit(UserCreated(user: result));
+      emit(UserSuccess(users: result));
     } catch (e) {
       emit(UserFailed(message: e.toString()));
     }
